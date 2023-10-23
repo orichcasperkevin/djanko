@@ -4,7 +4,7 @@ Bringing passwordless authentication to Django
 ## Contributing
 
 Follow these steps to start contributing  
-1.Clone the project, `git clone https://github.com/mugagambi/mck-ruaraka.git`  
+1.Clone the project, `[git clone https://github.com/orichcasperkevin/djanko.git ]`  
 2.Make sure you have the right system dependencies. This project depends on `python>=3.6`
 3.Cd to the project root and create a virtualenv named venv. Just follow online tutorials to create a virtualenv.    
 4.Activate the virtualenv.  
