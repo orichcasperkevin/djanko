@@ -8,7 +8,7 @@ class SimpleMiddleware:
         self.get_response = get_response
         # One-time configuration and initialization.
 
-
+    
     def _deny(self):
         return JsonResponse({"error": "Unauthorized"},safe=False)
 
@@ -27,8 +27,6 @@ class SimpleMiddleware:
             return self._deny()
 
         token = self._extract_token_from_header(authorization)       
-        print(token)      
-
         if not token:
             return self._deny()
 
@@ -39,19 +37,19 @@ class SimpleMiddleware:
             ssl_context.check_hostname = False
             ssl_context.verify_mode = ssl.CERT_NONE        
             jwks_client = jwt.PyJWKClient(
-                settings.HANKO_API_URL + "/.well-known/jwks.json", ssl_context=ssl_context
-            )            
-            signing_key = jwks_client.get_signing_key_from_jwt(token)         
+                settings.HANKO_API_URL + "/.well-known/jwks.json",
+                ssl_context=ssl_context
+            )          
+            signing_key = jwks_client.get_signing_key_from_jwt(token)        
             data = jwt.decode(
                 token,
                 signing_key.key,
                 algorithms=["RS256"],
                 audience="localhost",
-
             )
 
             if not data:
-                return self._deny()           
+                    return self._deny()           
 
         except (jwt.DecodeError, Exception) as e:
             print(f"Authentication error: {e}")
