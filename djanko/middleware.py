@@ -26,7 +26,7 @@ class SimpleMiddleware:
         if not authorization:
             return self._deny()
 
-        token = self._extract_token_from_header(authorization)       
+        token = self._extract_token_from_header(authorization)               
         if not token:
             return self._deny()
 
@@ -40,6 +40,7 @@ class SimpleMiddleware:
                 settings.HANKO_API_URL + "/.well-known/jwks.json",
                 ssl_context=ssl_context
             )          
+            token = token + "===="
             signing_key = jwks_client.get_signing_key_from_jwt(token)        
             data = jwt.decode(
                 token,
