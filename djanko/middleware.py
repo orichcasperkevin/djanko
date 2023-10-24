@@ -3,7 +3,7 @@ from django.conf import settings
 from django.http import JsonResponse
 import jwt
 
-class SimpleMiddleware:
+class AuthenticationMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
         # One-time configuration and initialization.
@@ -32,15 +32,15 @@ class SimpleMiddleware:
 
         try:
             # Disable SSL certificate verification while in development. Don't forget to remove this when in prod
-
             ssl_context = ssl.create_default_context()
-            ssl_context.check_hostname = False
-            ssl_context.verify_mode = ssl.CERT_NONE        
+            if settings.DEBUG:  
+                ssl_context.check_hostname = False
+                ssl_context.verify_mode = ssl.CERT_NONE        
             jwks_client = jwt.PyJWKClient(
                 settings.HANKO_API_URL + "/.well-known/jwks.json",
                 ssl_context=ssl_context
             )          
-            token = token + "===="
+            token = token + "====" #add padding to token for base64
             signing_key = jwks_client.get_signing_key_from_jwt(token)        
             data = jwt.decode(
                 token,
