@@ -12,4 +12,7 @@ Follow these steps to start contributing
 6.Migrate to update the database schema `python manage.py migrate`.   
 7.Finally run server. `python manage.py runserver`  
 
+## TEST URL
+8. Try a GET request with url `http://localhost:8000/djanko/test` and the hanko jwt as you Bearer token
+
 If you have any question or an issue open, open a github issue
