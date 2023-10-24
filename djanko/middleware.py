@@ -52,8 +52,7 @@ class AuthenticationMiddleware:
             if not data:
                     return self._deny()           
 
-        except (jwt.DecodeError, Exception) as e:
-            print(f"Authentication error: {e}")
+        except (jwt.DecodeError, Exception) as e:            
             return self._deny()
 
         response = self.get_response(request)
