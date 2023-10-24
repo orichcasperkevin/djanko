@@ -10,7 +10,7 @@ class AuthenticationMiddleware:
 
     
     def _deny(self):
-        return JsonResponse({"error": "Unauthorized"},safe=False)
+        return JsonResponse({"error": "Unauthorized"},safe=False,status=401)
 
 
     def _extract_token_from_header(self,header: str) -> str:
