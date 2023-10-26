@@ -1,7 +1,5 @@
-import ssl
-from django.conf import settings
 from django.http import JsonResponse
-import jwt
+from .hanko import authenticate
 
 class AuthenticationMiddleware:
     def __init__(self, get_response):
@@ -9,8 +7,11 @@ class AuthenticationMiddleware:
         # One-time configuration and initialization.
 
     
-    def _deny(self):
-        return JsonResponse({"error": "Unauthorized"},safe=False,status=401)
+    def _deny(self,reason):
+        return JsonResponse(
+            {"error": "Unauthorized " + str(reason)},
+            safe=False,status=401
+        )
 
 
     def _extract_token_from_header(self,header: str) -> str:
@@ -30,30 +31,15 @@ class AuthenticationMiddleware:
         if not token:
             return self._deny()
 
-        try:
-            # Disable SSL certificate verification while in development. Don't forget to remove this when in prod
-            ssl_context = ssl.create_default_context()
-            if settings.DEBUG:  
-                ssl_context.check_hostname = False
-                ssl_context.verify_mode = ssl.CERT_NONE        
-            jwks_client = jwt.PyJWKClient(
-                settings.HANKO_API_URL + "/.well-known/jwks.json",
-                ssl_context=ssl_context
-            )          
-            token = token + "====" #add padding to token for base64
-            signing_key = jwks_client.get_signing_key_from_jwt(token)        
-            data = jwt.decode(
-                token,
-                signing_key.key,
-                algorithms=["RS256"],
-                audience="localhost",
-            )
-
+        
+        valid,data = authenticate(token)
+        if not valid:
+            return self._deny(data)           
+        if valid:
             if not data:
-                    return self._deny()           
-
-        except (jwt.DecodeError, Exception) as e:            
-            return self._deny()
+                self._deny("No data in token")
+            print(data)
+    
 
         response = self.get_response(request)
 
