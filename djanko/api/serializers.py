@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
             email = validated_data.get('email'),
             first_name = validated_data.get('first_name'),
             last_name = validated_data.get('last_name')
-        )               
+        )                     
         user.hankoprofile.hanko_id = validated_data.get('hanko_id')
         user.save()
         return user

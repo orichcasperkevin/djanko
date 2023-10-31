@@ -24,7 +24,8 @@ def extract_token_from_header(header: str) -> str:
 
 
 class CreateUser(GenericAPIView):
-    serializer_class = UserSerializer
+    authentication_classes = [] #disables authentication
+    serializer_class = UserSerializer    
 
     def post(self, request):       
         authorization = request.headers.get("Authorization")
@@ -42,7 +43,7 @@ class CreateUser(GenericAPIView):
             if not token_data:
                 deny("No data in token")            
         
-        hanko_id = token_data.get('sub')
+        hanko_id = token_data.get('sub')    
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save(hanko_id=hanko_id)
@@ -50,6 +51,16 @@ class CreateUser(GenericAPIView):
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
 
         }) 
+
+class GetUser(APIView):    
+
+    def get(self,request):
+        user = request.user
+        return Response(
+            UserSerializer(user).data
+        )
+
+
 
 class CurrentDateTime(APIView):
     def get(self,_):
