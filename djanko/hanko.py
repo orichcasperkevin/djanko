@@ -2,6 +2,12 @@ import jwt
 import ssl
 from django.conf import settings
 
+def padded_token(token):
+    padding_needed = len(token) % 4
+    if padding_needed:
+        padding_needed = 4 - padding_needed
+    return token + ('=' * padding_needed)
+
 def authenticate(token:str) -> tuple:
     ssl_context = ssl.create_default_context()
     if settings.DEBUG:  
@@ -11,7 +17,7 @@ def authenticate(token:str) -> tuple:
         settings.HANKO_API_URL + "/.well-known/jwks.json",
         ssl_context=ssl_context
     )                   
-    token = token + "====" #add padding to token for base64
+    token = padded_token(token) #add padding to token for base64
     try:
         signing_key = jwks_client.get_signing_key_from_jwt(token)        
         data = jwt.decode(
