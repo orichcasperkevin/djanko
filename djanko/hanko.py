@@ -8,15 +8,19 @@ def padded_token(token):
         padding_needed = 4 - padding_needed
     return token + ('=' * padding_needed)
 
-def authenticate(token:str) -> tuple:
-    ssl_context = ssl.create_default_context()
-    if settings.DEBUG:  
-        ssl_context.check_hostname = False
-        ssl_context.verify_mode = ssl.CERT_NONE        
-    jwks_client = jwt.PyJWKClient(
+#ssl context
+ssl_context = ssl.create_default_context()
+if settings.DEBUG:  
+    ssl_context.check_hostname = False
+    ssl_context.verify_mode = ssl.CERT_NONE  
+
+#jwks_client
+jwks_client = jwt.PyJWKClient(
         settings.HANKO_API_URL + "/.well-known/jwks.json",
         ssl_context=ssl_context
-    )                   
+    )
+
+def authenticate(token:str,jwks_client:jwt.PyJWKClient=jwks_client) -> tuple:           
     token = padded_token(token) #add padding to token for base64
     try:
         signing_key = jwks_client.get_signing_key_from_jwt(token)        

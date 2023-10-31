@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from rest_framework import authentication
 from rest_framework import exceptions
-from .hanko import authenticate
+from .hanko import authenticate as hanko_authenticate
 
 User = get_user_model()
 
@@ -23,7 +23,7 @@ class HankoAuthentication(authentication.BaseAuthentication):
         if not token:
             return deny('No token')
 
-        valid,token_data = authenticate(token)
+        valid,token_data = hanko_authenticate(token)
         if not valid:
             return deny(token_data)           
         if valid:

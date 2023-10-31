@@ -24,7 +24,7 @@ def extract_token_from_header(header: str) -> str:
 
 
 class CreateUser(GenericAPIView):
-    authentication_classes = [] #disables authentication
+    authentication_classes = [] #disables Hanko authentication
     serializer_class = UserSerializer    
 
     def post(self, request):       
@@ -59,7 +59,6 @@ class GetUser(APIView):
         return Response(
             UserSerializer(user).data
         )
-
 
 
 class CurrentDateTime(APIView):
