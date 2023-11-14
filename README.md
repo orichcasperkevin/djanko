@@ -2,7 +2,7 @@
  Djanko is a Django app that brings passkey authentication by Hanko (https://www.hanko.io/) to your django projects.
 
  ## PyPI
- `pip install -i https://test.pypi.org/simple/ djanko`  
+ `pip install --extra-index-url https://testpypi.python.org/pypi djanko`  
  
   Dont worry, this is a test account, A real pyPI account on the works
 
